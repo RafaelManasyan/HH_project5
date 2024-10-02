@@ -1,3 +1,4 @@
+from project_folder.src.files_class_module import JSONSaver
 from project_folder.src.vacancy_class import Vacancy
 from src.api_class_module import HeadHunterAPI
 
@@ -22,6 +23,7 @@ json_saver.delete_vacancy(vacancy)
 def user_interaction():
     search_query = input("Введите поисковый запрос: ")
     vacancies_json_list = HeadHunterAPI().get_vacancies(search_query)
+
     top_n = int(input("Введите количество вакансий для вывода в топ N: "))
     filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
     salary_range = input("Введите диапазон зарплат: ") # Пример: 100000 - 150000
