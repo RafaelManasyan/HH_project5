@@ -38,6 +38,7 @@ class Vacancy(VacancyABC):
 
     @property
     def get_vacancy_info(self):
+        """Функция-геттер для получения словаря по экземпляру класса Vacancy"""
         vacancy_dict = {"name": self.__vacancy_name,
                         "url": self.__vacancy_url,
                         "salary_from": self.__salary_from,

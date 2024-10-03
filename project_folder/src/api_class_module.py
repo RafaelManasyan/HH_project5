@@ -34,6 +34,3 @@ class HeadHunterAPI(ApiHH):
         """
         self.__get_vacancies(keyword)
         return self.__vacancies
-
-
-print(HeadHunterAPI().get_vacancies('python'))

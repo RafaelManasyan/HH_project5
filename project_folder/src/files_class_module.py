@@ -1,25 +1,58 @@
 import json
-
+from abc import ABC, abstractmethod
 from project_folder.src.vacancy_class import Vacancy
-import os
 
 
-class JSONSaver:
+class SaverABC(ABC):
+
+    def save_to_json_file(self, vac_obj_list):
+        pass
+
+    def add_vacancy(self, vacancy_object):
+        pass
+
+    def delete_vacancy(self, vacancy_object):
+        pass
+
+
+class JSONSaver(SaverABC):
+    """Класс для сохранения списка объектов в файл, добавления и удаления объектов"""
 
     def __init__(self):
         self.path = "../data/vacancies.json"
 
     def save_to_json_file(self, vac_obj_list):
+        """Метод получает список объектов, записывает их в json-формате в json-файл"""
         vac_dicts_list = [vacancy.get_vacancy_info for vacancy in vac_obj_list]
         with open(self.path, mode='w') as json_file:
             json.dump(vac_dicts_list, json_file, indent=4, ensure_ascii=False)
 
-    def add_vacancy(self, vacancy):
-        pass
+    def add_vacancy(self, vacancy_object):
+        """Метод получает экземпляр класса Vacancy, загружает данные из json-файла,
+        затем преобразовывет с помощью геттера экземпляр класса Vacancy в словарь, добавляем  вакансию,
+        если ее нет в файле и перезаписываем результат в json-файл"""
+        vac_to_add = vacancy_object.get_vacancy_info
+        with open(self.path, mode='r+') as json_file:
+            py_file = json.load(json_file)
+            if not vac_to_add.get('id') in [vacancy.get('id') for vacancy in py_file]:
+                py_file.append(vac_to_add)
+                json_file.seek(0)
+                json_file.truncate()
+                json.dump(py_file, json_file, indent=4, ensure_ascii=False)
+            else:
+                return 'Vacancy already in data'
 
-    def delete_vacancy(self, vacancy):
-        pass
+    def delete_vacancy(self, vacancy_object):
+        """Метод удаления вакансии из json-файла"""
+        vac_to_del = vacancy_object.get_vacancy_info
+        with open(self.path, mode='r+') as json_file:
+            py_file = json.load(json_file)
+            for vacancy in py_file:
+                if vac_to_del.get('id') == vacancy.get('id'):
+                    py_file.remove(vacancy)
+                    json_file.seek(0)
+                    json_file.truncate()
+                    json.dump(py_file, json_file, indent=4, ensure_ascii=False)
+                elif not [vacancy.get('id') for vacancy in py_file]:
+                    return 'Vacancy is not in data'
 
-
-x = Vacancy.cast_to_object_list([{'id': '106466003', 'premium': False, 'name': 'Monitoring Data Analyst', 'department': None, 'has_test': False, 'response_letter_required': False, 'area': {'id': '1', 'name': 'Москва', 'url': 'https://api.hh.ru/areas/1'}, 'salary': None, 'type': {'id': 'open', 'name': 'Открытая'}, 'address': None, 'response_url': None, 'sort_point_distance': None, 'published_at': '2024-09-27T16:50:17+0300', 'created_at': '2024-09-27T16:50:17+0300', 'archived': False, 'apply_alternate_url': 'https://hh.ru/applicant/vacancy_response?vacancyId=106466003', 'show_logo_in_search': None, 'insider_interview': None, 'url': 'https://api.hh.ru/vacancies/106466003?host=hh.ru', 'alternate_url': 'https://hh.ru/vacancy/106466003', 'relations': [], 'employer': {'id': '9757724', 'name': 'HuntIT', 'url': 'https://api.hh.ru/employers/9757724', 'alternate_url': 'https://hh.ru/employer/9757724', 'logo_urls': {'original': 'https://img.hhcdn.ru/employer-logo-original/1084973.png', '240': 'https://img.hhcdn.ru/employer-logo/5960522.png', '90': 'https://img.hhcdn.ru/employer-logo/5960521.png'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=9757724', 'accredited_it_employer': False, 'trusted': True}, 'snippet': {'requirement': 'Отличное знание SQL (ISO/IEC 9075). Хорошее знание <highlighttext>Python</highlighttext> для аналитики (Pandas, Numpy и др.). Умение видеть за цифрами причины...', 'responsibility': 'Мониторинг состояния и поддержка Data Pipeline-а. Устранение инцидентов, возникающих в ходе ETL процессов. Нахождение аномалий в данных и их...'}, 'contacts': None, 'schedule': {'id': 'fullDay', 'name': 'Полный день'}, 'working_days': [], 'working_time_intervals': [], 'working_time_modes': [], 'accept_temporary': False, 'professional_roles': [{'id': '10', 'name': 'Аналитик'}], 'accept_incomplete_resumes': False, 'experience': {'id': 'between1And3', 'name': 'От 1 года до 3 лет'}, 'employment': {'id': 'full', 'name': 'Полная занятость'}, 'adv_response_url': None, 'is_adv_vacancy': False, 'adv_context': None}, {'id': '107100951', 'premium': False, 'name': 'Инженер группы поддержки L3 (телеком проекты)', 'department': None, 'has_test': False, 'response_letter_required': False, 'area': {'id': '66', 'name': 'Нижний Новгород', 'url': 'https://api.hh.ru/areas/66'}, 'salary': {'from': 140000, 'to': 180000, 'currency': 'RUR', 'gross': False}, 'type': {'id': 'open', 'name': 'Открытая'}, 'address': {'city': 'Нижний Новгород', 'street': 'улица Нартова', 'building': '6к6', 'lat': 56.281426, 'lng': 43.995629, 'description': None, 'raw': 'Нижний Новгород, улица Нартова, 6к6', 'metro': {'station_name': 'Горьковская', 'line_name': 'Автозаводская', 'station_id': '50.278', 'line_id': '50', 'lat': 56.313933, 'lng': 43.99482}, 'metro_stations': [{'station_name': 'Горьковская', 'line_name': 'Автозаводская', 'station_id': '50.278', 'line_id': '50', 'lat': 56.313933, 'lng': 43.99482}], 'id': '2043230'}, 'response_url': None, 'sort_point_distance': None, 'published_at': '2024-09-11T08:05:04+0300', 'created_at': '2024-09-11T08:05:04+0300', 'archived': False, 'apply_alternate_url': 'https://hh.ru/applicant/vacancy_response?vacancyId=107100951', 'show_logo_in_search': None, 'insider_interview': None, 'url': 'https://api.hh.ru/vacancies/107100951?host=hh.ru', 'alternate_url': 'https://hh.ru/vacancy/107100951', 'relations': [], 'employer': {'id': '3760381', 'name': 'Представительство Пелатро Пте. ЛТД. в Нижнем Новгороде', 'url': 'https://api.hh.ru/employers/3760381', 'alternate_url': 'https://hh.ru/employer/3760381', 'logo_urls': {'90': 'https://img.hhcdn.ru/employer-logo/2819919.png', '240': 'https://img.hhcdn.ru/employer-logo/2819920.png', 'original': 'https://img.hhcdn.ru/employer-logo-original/594666.png'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=3760381', 'accredited_it_employer': False, 'trusted': True}, 'snippet': {'requirement': 'Опыт работы с SNMP и OpenNMS будет плюсом. Знание <highlighttext>Python</highlighttext> будет существенным плюсом. Знание bash будет плюсом. Понимание работы GSM...', 'responsibility': 'Работа в группе поддержки третьего уровня в команде из 5 человек. Поддержка нашей системы, развернутой у крупнейших телеком операторов мира...'}, 'contacts': None, 'schedule': {'id': 'fullDay', 'name': 'Полный день'}, 'working_days': [], 'working_time_intervals': [], 'working_time_modes': [], 'accept_temporary': False, 'professional_roles': [{'id': '121', 'name': 'Специалист технической поддержки'}], 'accept_incomplete_resumes': True, 'experience': {'id': 'between1And3', 'name': 'От 1 года до 3 лет'}, 'employment': {'id': 'full', 'name': 'Полная занятость'}, 'adv_response_url': None, 'is_adv_vacancy': False, 'adv_context': None}, {'id': '107264512', 'premium': False, 'name': 'Аналитик данных (middle)', 'department': {'id': 'mgfn-3127-it', 'name': 'МегаФон, IT'}, 'has_test': False, 'response_letter_required': False, 'area': {'id': '1', 'name': 'Москва', 'url': 'https://api.hh.ru/areas/1'}, 'salary': None, 'type': {'id': 'open', 'name': 'Открытая'}, 'address': None, 'response_url': None, 'sort_point_distance': None, 'published_at': '2024-09-13T16:35:46+0300', 'created_at': '2024-09-13T16:35:46+0300', 'archived': False, 'apply_alternate_url': 'https://hh.ru/applicant/vacancy_response?vacancyId=107264512', 'branding': {'type': 'MAKEUP', 'tariff': None}, 'show_logo_in_search': True, 'insider_interview': None, 'url': 'https://api.hh.ru/vacancies/107264512?host=hh.ru', 'alternate_url': 'https://hh.ru/vacancy/107264512', 'relations': [], 'employer': {'id': '3127', 'name': 'МегаФон', 'url': 'https://api.hh.ru/employers/3127', 'alternate_url': 'https://hh.ru/employer/3127', 'logo_urls': {'90': 'https://img.hhcdn.ru/employer-logo/3747371.png', '240': 'https://img.hhcdn.ru/employer-logo/3747372.png', 'original': 'https://img.hhcdn.ru/employer-logo-original/826622.png'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=3127', 'accredited_it_employer': False, 'trusted': True}, 'snippet': {'requirement': 'Знания в области AB-тестирования и статистики. Плюсом будет. Опыт работы с <highlighttext>Python</highlighttext>. Умение работать с Git. Опыт работы с...', 'responsibility': 'Прогнозирование и поиск причинно-следственных связей для оттока/недовольств абонентов. Персонализация сохраняющих предложений. Оценка эффектов на бизнес-KPI как для...'}, 'contacts': None, 'schedule': {'id': 'fullDay', 'name': 'Полный день'}, 'working_days': [], 'working_time_intervals': [], 'working_time_modes': [], 'accept_temporary': False, 'professional_roles': [{'id': '156', 'name': 'BI-аналитик, аналитик данных'}], 'accept_incomplete_resumes': False, 'experience': {'id': 'between1And3', 'name': 'От 1 года до 3 лет'}, 'employment': {'id': 'full', 'name': 'Полная занятость'}, 'adv_response_url': None, 'is_adv_vacancy': False, 'adv_context': None}])
-print(JSONSaver().save_to_json_file(x))
