@@ -1,6 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from project_folder.src.vacancy_class import Vacancy
+import os
 
 
 class SaverABC(ABC):
@@ -22,7 +23,7 @@ class JSONSaver(SaverABC):
     """Класс для сохранения списка объектов в файл, добавления и удаления объектов"""
 
     def __init__(self):
-        self.path = "../data/vacancies.json"
+        self.path = os.path.join(os.getcwd(), "data/vacancies.json")
 
     def save_to_json_file(self, vac_obj_list):
         """Метод получает список объектов, записывает их в json-формате в json-файл"""
@@ -58,4 +59,3 @@ class JSONSaver(SaverABC):
                     json.dump(py_file, json_file, indent=4, ensure_ascii=False)
                 elif not [vacancy.get('id') for vacancy in py_file]:
                     return 'Vacancy is not in data'
-

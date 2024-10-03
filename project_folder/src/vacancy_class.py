@@ -14,7 +14,7 @@ class Vacancy(VacancyABC):
     def __init__(self, vacancy_name, vacancy_url, salary_from, salary_to, requirement, vacancy_id):
         self.__vacancy_name: str = vacancy_name
         self.__vacancy_url: str = vacancy_url if vacancy_url else 'Ссылка не указана'
-        self.__salary_from: int = salary_from if salary_to else 0
+        self.__salary_from: int = salary_from if salary_from else 0
         self.__salary_to: int = salary_to if salary_to else 0
         self.__requirement: str = requirement if requirement else 'Требования не указаны'
         self.__id: str = vacancy_id
@@ -29,8 +29,8 @@ class Vacancy(VacancyABC):
         for vacancy in json_vacancies:
             vacancy_new = cls(vacancy.get('name'),
                               vacancy.get('alternate_url'),
-                              vacancy.get('salary').get('from') if vacancy.get('salary') else None,
-                              vacancy.get('salary').get('to') if vacancy.get('salary') else None,
+                              vacancy.get('salary', {}).get('from') if vacancy.get('salary', {}).get('from') else 0.0,
+                              vacancy.get('salary', {}).get('to') if vacancy.get('salary', {}).get('to') else 0.0,
                               vacancy.get('snippet').get('requirement'),
                               vacancy.get('id') if len(vacancy.get('id')) == 9 else 'Unknown')
             vacancies_list.append(vacancy_new)
@@ -42,7 +42,7 @@ class Vacancy(VacancyABC):
         vacancy_dict = {"name": self.__vacancy_name,
                         "url": self.__vacancy_url,
                         "salary_from": self.__salary_from,
-                        "salary_to": self.__salary_from,
+                        "salary_to": self.__salary_to,
                         "requirement": self.__requirement,
                         "id": self.__id}
         return vacancy_dict
