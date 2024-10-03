@@ -22,7 +22,6 @@ json_saver.delete_vacancy(vacancy)
 # Функция для взаимодействия с пользователем
 def user_interaction():
     search_query = input("Введите поисковый запрос: ")
-    vacancies_json_list = HeadHunterAPI().get_vacancies(search_query)
 
     top_n = int(input("Введите количество вакансий для вывода в топ N: "))
     filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()

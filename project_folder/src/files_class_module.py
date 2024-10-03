@@ -5,12 +5,15 @@ from project_folder.src.vacancy_class import Vacancy
 
 class SaverABC(ABC):
 
+    @abstractmethod
     def save_to_json_file(self, vac_obj_list):
         pass
 
+    @abstractmethod
     def add_vacancy(self, vacancy_object):
         pass
 
+    @abstractmethod
     def delete_vacancy(self, vacancy_object):
         pass
 
