@@ -12,8 +12,16 @@ def filter_vacancies(vacs_obj_list: list, filter_words) -> list:
     return filtered_vacancies
 
 
-def get_top_vacancies(srtd_vacancies, top_n) -> list:
-    return srtd_vacancies[:top_n]
+def get_top_vacancies(srtd_vacancies, top_n) -> str:
+    top_n_vacancies = srtd_vacancies[:top_n]
+    result = ''
+    for vacancy in top_n_vacancies:
+        result += f'''Вакансия: {vacancy.get('name')}
+        Зарплата от {vacancy.get('salary_from')} до {vacancy.get('salary_to')}
+        Требования: {vacancy.get('requirement')}
+        Ссылка: {vacancy.get('url')}
+        \n'''
+    return result
 
 
 def sort_vacancies(ranged_by_salary_vacs_list) -> list:
@@ -35,9 +43,3 @@ def get_vacancies_by_salary(fltrd_list, salary_from, salary_to) -> list:
         if int(salary_from) < int(avg_salary) < int(salary_to):
             ranged_vacancies.append(vacancy)
     return ranged_vacancies
-
-
-# y = get_vacancies_by_salary(x, 10000, 150000)
-# z = sort_vacancies(y)
-# i = get_top_vacancies(z, 2)
-# print(i)
