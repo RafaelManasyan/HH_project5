@@ -24,13 +24,19 @@ class HeadHunterAPI(ApiHH):
     def __get_vacancies(self, keyword: str):
         """Приватный метод получения списка ваканский"""
         self.__params["text"] = keyword
-        while self.__params.get("page") != 20:
-            response = requests.get(
-                self.__url, headers=self.__headers, params=self.__params
-            )
-            vacancies = response.json()["items"]
-            self.__vacancies.extend(vacancies)
-            self.__params["page"] += 1
+        try:
+            while self.__params.get("page") != 20:
+                if requests.get(
+                    self.__url, headers=self.__headers, params=self.__params
+                ).status_code == 200:
+                    response = requests.get(
+                        self.__url, headers=self.__headers, params=self.__params
+                    )
+                    vacancies = response.json()["items"]
+                    self.__vacancies.extend(vacancies)
+                    self.__params["page"] += 1
+        except Exception as e:
+            print(f"Что-то не так с подключением, ошибка: {e}")
 
     def get_vacancies(self, keyword: str) -> list:
         """ Получаем список вакансий в формате json из одноименного приватного метода"""

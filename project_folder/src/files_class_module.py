@@ -58,5 +58,5 @@ class JSONSaver(SaverABC):
                     json_file.seek(0)
                     json_file.truncate()
                     json.dump(py_file, json_file, indent=4, ensure_ascii=False)
-                elif not [vacancy.get("id") for vacancy in py_file]:
-                    return "Vacancy is not in data"
+                    return "Vacancy deleted successfully"
+        return "Vacancy is not in data"
