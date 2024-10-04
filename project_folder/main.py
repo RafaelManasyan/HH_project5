@@ -1,8 +1,11 @@
-from src.api_class_module import HeadHunterAPI
+from project_folder.src.api_class_module import HeadHunterAPI
 
-from project_folder.src.files_class_module import JSONSaver
-from project_folder.src.utils import (filter_vacancies, get_top_vacancies,
-                                      get_vacancies_by_salary, sort_vacancies)
+from project_folder.src.utils import (
+    filter_vacancies,
+    get_top_vacancies,
+    get_vacancies_by_salary,
+    sort_vacancies,
+)
 from project_folder.src.vacancy_class import Vacancy
 
 

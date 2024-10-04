@@ -26,9 +26,12 @@ class HeadHunterAPI(ApiHH):
         self.__params["text"] = keyword
         try:
             while self.__params.get("page") != 20:
-                if requests.get(
-                    self.__url, headers=self.__headers, params=self.__params
-                ).status_code == 200:
+                if (
+                    requests.get(
+                        self.__url, headers=self.__headers, params=self.__params
+                    ).status_code
+                    == 200
+                ):
                     response = requests.get(
                         self.__url, headers=self.__headers, params=self.__params
                     )
@@ -39,6 +42,6 @@ class HeadHunterAPI(ApiHH):
             print(f"Что-то не так с подключением, ошибка: {e}")
 
     def get_vacancies(self, keyword: str) -> list:
-        """ Получаем список вакансий в формате json из одноименного приватного метода"""
+        """Получаем список вакансий в формате json из одноименного приватного метода"""
         self.__get_vacancies(keyword)
         return self.__vacancies

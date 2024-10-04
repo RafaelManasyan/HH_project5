@@ -14,13 +14,13 @@ def filter_vacancies(vacs_obj_list: list, filter_words) -> list:
 
 def get_top_vacancies(srtd_vacancies, top_n) -> str:
     top_n_vacancies = srtd_vacancies[:top_n]
-    result = ''
+    result = ""
     for vacancy in top_n_vacancies:
-        result += f'''Вакансия: {vacancy.get('name')}
+        result += f"""Вакансия: {vacancy.get('name')}
         Зарплата от {vacancy.get('salary_from')} до {vacancy.get('salary_to')}
         Требования: {vacancy.get('requirement')}
         Ссылка: {vacancy.get('url')}
-        \n'''
+        \n"""
     return result
 
 
