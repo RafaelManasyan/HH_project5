@@ -1,4 +1,4 @@
-from project_folder.src.api_class_module import HeadHunterAPI
+from project_folder.src.api_class_module import FindVacancyFromHHApi
 
 from project_folder.src.utils import (
     filter_vacancies,
@@ -9,10 +9,10 @@ from project_folder.src.utils import (
 from project_folder.src.vacancy_class import Vacancy
 
 
-# Функция для взаимодействия с пользователем
 def user_interaction():
+    """Функция для взаимодействия с пользователем"""
     search_query = input("Введите поисковый запрос: ")
-    hh_vacancies = HeadHunterAPI().get_vacancies(
+    hh_vacancies = FindVacancyFromHHApi().get_vacancies(
         search_query
     )  # Получение вакансий с hh.ru в формате JSON
     vacancies_list = Vacancy.cast_to_object_list(
