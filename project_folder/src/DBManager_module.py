@@ -46,4 +46,3 @@ class DBManager(ABSDBManager):
 
     def get_vacancies_with_keyword(self):
         pass
-
