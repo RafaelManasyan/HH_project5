@@ -16,10 +16,11 @@ class Vacancy(VacancyABC):
         "__salary_to",
         "__requirement",
         "__id",
+        "__employer_id",
     )
 
     def __init__(
-        self, vacancy_name, vacancy_url, salary_from, salary_to, requirement, vacancy_id
+        self, vacancy_name, vacancy_url, salary_from, salary_to, requirement, vacancy_id, employer_id
     ):
         self.__vacancy_name: str = vacancy_name
         self.__vacancy_url: str = vacancy_url if vacancy_url else "Ссылка не указана"
@@ -29,6 +30,7 @@ class Vacancy(VacancyABC):
             requirement if requirement else "Требования не указаны"
         )
         self.__id: str = vacancy_id if len(vacancy_id) == 9 else "Unknown"
+        self.__employer_id: str = employer_id
 
     @classmethod
     def cast_to_object_list(cls, json_vacancies) -> list:
@@ -53,6 +55,7 @@ class Vacancy(VacancyABC):
                 ),
                 vacancy.get("snippet").get("requirement"),
                 vacancy.get("id"),
+                vacancy.get("employer").get("id")
             )
             vacancies_list.append(vacancy_new)
         return vacancies_list
@@ -67,5 +70,6 @@ class Vacancy(VacancyABC):
             "salary_to": self.__salary_to,
             "requirement": self.__requirement,
             "id": self.__id,
+            "employer_id": self.__employer_id
         }
         return vacancy_dict
