@@ -93,4 +93,4 @@ class FindEmployerFromHHApi(ApiHH):
 
     def get_employer_info(self, keyword=''):
         self.__get_employer_info(keyword)
-        return self.__employer
+        return self.__employers
