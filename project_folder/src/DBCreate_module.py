@@ -6,7 +6,7 @@ class DBConnection:
 
     def __init__(self):
         self._host = "localhost"
-        self._database = "postgres"
+        self._database = "employers_vacancy"
         self._username = "postgres"
         self._port = "5432"
         self._password = "nokwyz-2tigtY-pofjef"
@@ -17,6 +17,7 @@ class DBCreating(DBConnection):
 
     def __init__(self):
         super().__init__()
+        self._database = "postgres"
 
     def create_db(self):
         conn = psycopg2.connect(
@@ -58,7 +59,8 @@ class CreatingDBEmployersTable(DBConnection):
         cur.close()
         conn.close()
 
-    def db_filling_columns_for_emps(self, employers_list: list):
+    def db_filling_columns_for_emps(self, employers_id_list: list, employers_list: list):
+        filtered_employers_list = [emp for emp in employers_list if emp['id'] in employers_id_list]
         try:
             conn = psycopg2.connect(
                 host=self._host,
@@ -68,7 +70,7 @@ class CreatingDBEmployersTable(DBConnection):
                 password=self._password,
             )
             cur = conn.cursor()
-            for employer in employers_list:
+            for employer in filtered_employers_list:
                 cur.execute(
                     """INSERT INTO employers (employer_id, company_name, vacancies_count) VALUES (%s, %s, %s)""",
                     (employer.get('id'), employer.get('name'), employer.get('open_vacancies'))
@@ -139,3 +141,6 @@ class CreatingDBVacanciesTable(DBConnection):
         finally:
             cur.close()
             conn.close()
+
+
+# x = CreatingDBEmployersTable().db_filling_columns_for_emps(list(1071925, 2180, 99759, 4352, 1740, 9173883, 26624, 15478, 62136, 3144945, 3959394), [{'id': '719302', 'name': 'Современные Технологии', 'url': 'https://api.hh.ru/employers/719302', 'alternate_url': 'https://hh.ru/employer/719302', 'logo_urls': {'original': 'https://img.hhcdn.ru/employer-logo-original/147211.jpg', '240': 'https://img.hhcdn.ru/employer-logo/492638.jpeg', '90': 'https://img.hhcdn.ru/employer-logo/492637.jpeg'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=719302', 'open_vacancies': 0}, {'id': '720082', 'name': 'Инновации.Технологии.Производство', 'url': 'https://api.hh.ru/employers/720082', 'alternate_url': 'https://hh.ru/employer/720082', 'logo_urls': {'original': 'https://img.hhcdn.ru/employer-logo-original/536619.jpg', '240': 'https://img.hhcdn.ru/employer-logo/2587950.jpeg', '90': 'https://img.hhcdn.ru/employer-logo/2587949.jpeg'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=720082', 'open_vacancies': 0}, {'id': '720298', 'name': 'Новые Строительные Технологии', 'url': 'https://api.hh.ru/employers/720298', 'alternate_url': 'https://hh.ru/employer/720298', 'logo_urls': None, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=720298', 'open_vacancies': 0}, {'id': '720353', 'name': 'Процессорные системы и технологии', 'url': 'https://api.hh.ru/employers/720353', 'alternate_url': 'https://hh.ru/employer/720353', 'logo_urls': None, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=720353', 'open_vacancies': 0}, {'id': '720484', 'name': 'Информационные Технологии Стабильности и Развития', 'url': 'https://api.hh.ru/employers/720484', 'alternate_url': 'https://hh.ru/employer/720484', 'logo_urls': {'original': 'https://img.hhcdn.ru/employer-logo-original/147024.png', '240': 'https://img.hhcdn.ru/employer-logo/494456.png', '90': 'https://img.hhcdn.ru/employer-logo/494455.png'}, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=720484', 'open_vacancies': 0}, {'id': '721582', 'name': 'Университетский Центр Высоких Технологий', 'url': 'https://api.hh.ru/employers/721582', 'alternate_url': 'https://hh.ru/employer/721582', 'logo_urls': None, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=721582', 'open_vacancies': 0}, {'id': '722121', 'name': 'Технологии Тепла', 'url': 'https://api.hh.ru/employers/722121', 'alternate_url': 'https://hh.ru/employer/722121', 'logo_urls': None, 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=722121', 'open_vacancies': 0}])

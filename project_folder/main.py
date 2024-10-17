@@ -1,4 +1,5 @@
-from project_folder.src.api_class_module import FindVacancyFromHHApi
+from project_folder.src.DBCreate_module import CreatingDBEmployersTable, DBCreating
+from project_folder.src.api_class_module import FindVacancyFromHHApi, FindEmployerFromHHApi
 
 from project_folder.src.utils import (
     filter_vacancies,
@@ -33,5 +34,18 @@ def user_interaction():
     print(top_vacancies)
 
 
+def user_interaction_with_db():
+    """Функция для создания, заполнения и взаимодействия пользователя с базой данных вакансий"""
+    employer_word = input('Введите слово по которому хотите найти работодателя или оставьте поле пустым:\n')
+    employers_count = int(input('Введите топ N (число до 50) ваканский для просмотра:\n'))
+    employers = FindEmployerFromHHApi().get_employer_info(employers_count, keyword=employer_word)
+    employers_id_list = list(input('Введите через запятую id не менее 10 компаний, за которыми хотите следить:\n').split(', '))
+    DBCreating().create_db()
+    CreatingDBEmployersTable().db_creating_employers()
+    CreatingDBEmployersTable().db_filling_columns_for_emps(employers_id_list, employers)
+    
+
+
 if __name__ == "__main__":
-    user_interaction()
+    user_interaction_with_db()
+# 1071925, 2180, 99759, 4352, 1740, 9173883, 26624, 15478, 62136, 3144945, 3959394
