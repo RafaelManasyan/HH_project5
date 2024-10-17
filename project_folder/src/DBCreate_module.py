@@ -1,8 +1,8 @@
 import psycopg2
 
 
-class DBCreatingTable:
-    """Класс для создания таблиц в базе данных PostgreSQL"""
+class DBConnection:
+    """Класс для подключения к базе данных PostgreSQL"""
 
     def __init__(self):
         self._host = "localhost"
@@ -12,7 +12,28 @@ class DBCreatingTable:
         self._password = "nokwyz-2tigtY-pofjef"
 
 
-class CreatingDBEmployersTable(DBCreatingTable):
+class DBCreating(DBConnection):
+    """Класс для создания базы данных"""
+
+    def __init__(self):
+        super().__init__()
+
+    def create_db(self):
+        conn = psycopg2.connect(
+            host=self._host,
+            database=self._database,
+            user=self._username,
+            port=self._port,
+            password=self._password,
+        )
+        cur = conn.cursor()
+        conn.autocommit = True
+        cur.execute("""CREATE DATABASE employers_vacancy""")
+        cur.close()
+        conn.close()
+
+
+class CreatingDBEmployersTable(DBConnection):
     """Класс для создания таблицы работодателей в базе данных PostgreSQL"""
 
     def __init__(self):
@@ -60,7 +81,7 @@ class CreatingDBEmployersTable(DBCreatingTable):
             conn.close()
 
 
-class CreatingDBVacanciesTable(DBCreatingTable):
+class CreatingDBVacanciesTable(DBConnection):
     """Класс для создания таблицы вакансий в базе данных PostgreSQL"""
     def __init__(self):
         super().__init__()
