@@ -41,17 +41,22 @@ class FindVacancyFromHHApi(ApiHH):
         except Exception as e:
             print(f"Что-то не так с подключением, ошибка: {e}")
 
-    def __get_vacancies_by_employer_id(self, employers_id_list: list):
+    def __get_vacancies_by_employer_id(self, employer_id: str):
         """Приватный метод для получения вакансий по идентификационному номеру работодателя"""
         try:
-            for employer_id in employers_id_list:
-                self.__params["employer_id"] = employer_id
-                while self.__params.get("page") != 20:
-                    if requests.get(self.__url, headers=self.__headers, params=self.__params).status_code == 200:
-                        response = requests.get(self.__url, headers=self.__headers, params=self.__params)
-                        vacancies = response.json()["items"]
-                        self.__vacancies.extend(vacancies)
-                        self.__params["page"] += 1
+            self.__params["employer_id"] = employer_id
+            while self.__params.get("page") != 10:
+                response = requests.get(self.__url, headers=self.__headers, params=self.__params)
+                response_data = response.json()
+
+                if "items" in response_data:
+                    vacancies = response_data["items"]
+                    self.__vacancies.extend(vacancies)
+                else:
+                    print(f"Нет вакансий для работодателя с ID: {employer_id}")
+                    break  # Выход из цикла, если нет вакансий
+
+                self.__params["page"] += 1
         except Exception as e:
             print(f"Произошла ошибка: {e}")
 
@@ -60,8 +65,8 @@ class FindVacancyFromHHApi(ApiHH):
         self.__get_vacancies(keyword)
         return self.__vacancies
 
-    def get_vacancies_by_employer_id(self, employer_id_list: list):
-        self.__get_vacancies_by_employer_id(employer_id_list)
+    def get_vacancies_by_employer_id(self, employer_id: str):
+        self.__get_vacancies_by_employer_id(employer_id)
         return self.__vacancies
 
 
@@ -101,3 +106,7 @@ class FindEmployerFromHHApi(ApiHH):
             print(f'{employer.get('name')}, id: {employer.get('id')}')
         print("...")
         return self.__employers
+
+
+# x = FindVacancyFromHHApi().get_vacancies_by_employer_id('26624')
+# print(x)
