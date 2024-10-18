@@ -18,8 +18,10 @@ class DBManager(DBConnection):
             password=self._password,
         )
         cur = conn.cursor()
-        cur.execute('''SELECT employers.company_name, COUNT(vacancies.employer_id)
-        FROM employers JOIN vacancies USING (employer_id) GROUP BY employer_id''')
+        cur.execute(
+            """SELECT employers.company_name, COUNT(vacancies.employer_id)
+        FROM employers JOIN vacancies USING (employer_id) GROUP BY employer_id"""
+        )
         result = cur.fetchall()
         cur.close()
         conn.close()
@@ -35,9 +37,11 @@ class DBManager(DBConnection):
             password=self._password,
         )
         cur = conn.cursor()
-        cur.execute('''SELECT employers.company_name, vacancies.vacancy_name, 
+        cur.execute(
+            """SELECT employers.company_name, vacancies.vacancy_name, 
         ((vacancies.salary_from + vacancies.salary_to) / 2), vacancies.url
-        FROM vacancies JOIN employers USING(employer_id)''')
+        FROM vacancies JOIN employers USING(employer_id)"""
+        )
         result = cur.fetchall()
         cur.close()
         conn.close()
@@ -53,7 +57,9 @@ class DBManager(DBConnection):
             password=self._password,
         )
         cur = conn.cursor()
-        cur.execute('''SELECT AVG((vacancies.salary_from + vacancies.salary_to) / 2) FROM vacancies''')
+        cur.execute(
+            """SELECT AVG((vacancies.salary_from + vacancies.salary_to) / 2) FROM vacancies"""
+        )
         result = cur.fetchall()
         cur.close()
         conn.close()
@@ -69,14 +75,16 @@ class DBManager(DBConnection):
             password=self._password,
         )
         cur = conn.cursor()
-        cur.execute('''SELECT * FROM vacancies WHERE ((vacancies.salary_from + vacancies.salary_to) / 2) > 
-(SELECT (AVG((vacancies.salary_from + vacancies.salary_to) / 2)) FROM vacancies)''')
+        cur.execute(
+            """SELECT * FROM vacancies WHERE ((vacancies.salary_from + vacancies.salary_to) / 2) > 
+(SELECT (AVG((vacancies.salary_from + vacancies.salary_to) / 2)) FROM vacancies)"""
+        )
         result = cur.fetchall()
         cur.close()
         conn.close()
         return result
 
-    def get_vacancies_with_keyword(self, keyword):
+    def get_vacancies_with_keyword(self, keyword: str):
         """Метод для получения вакансий по ключевому слову"""
         conn = psycopg2.connect(
             host=self._host,
@@ -86,8 +94,10 @@ class DBManager(DBConnection):
             password=self._password,
         )
         cur = conn.cursor()
-        cur.execute(f"""SELECT * FROM vacancies 
-        WHERE vacancy_name LIKE '%{keyword.title()}%' OR vacancy_name LIKE '%{keyword.lower()}%'""")
+        cur.execute(
+            f"""SELECT * FROM vacancies 
+        WHERE vacancy_name LIKE '%{keyword.title()}%' OR vacancy_name LIKE '%{keyword.lower()}%'"""
+        )
         result = cur.fetchall()
         cur.close()
         conn.close()

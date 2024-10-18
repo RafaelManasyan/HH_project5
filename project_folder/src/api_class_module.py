@@ -46,7 +46,9 @@ class FindVacancyFromHHApi(ApiHH):
         try:
             self.__params["employer_id"] = employer_id
             while self.__params.get("page") != 10:
-                response = requests.get(self.__url, headers=self.__headers, params=self.__params)
+                response = requests.get(
+                    self.__url, headers=self.__headers, params=self.__params
+                )
                 response_data = response.json()
 
                 if "items" in response_data:
@@ -103,7 +105,7 @@ class FindEmployerFromHHApi(ApiHH):
     def get_employer_info(self, employers_count, keyword=""):
         self.__get_employer_info(keyword)
         for employer in self.__employers[:employers_count]:
-            print(f'{employer.get('name')}, id: {employer.get('id')}')
+            print(f"{employer.get('name')}, id: {employer.get('id')}")
         print("...")
         return self.__employers
 
