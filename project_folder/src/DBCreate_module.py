@@ -1,15 +1,34 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 class DBConnection:
     """Класс для подключения к базе данных PostgreSQL"""
 
     def __init__(self):
-        self._host = "localhost"
-        self._database = "employers_vacancy"
-        self._username = "postgres"
-        self._port = "5432"
-        self._password = "nokwyz-2tigtY-pofjef"
+        self._host = os.getenv('HOST')
+        self._database = os.getenv('DATABASE')
+        self._username = os.getenv('USERNAME')
+        self._port = os.getenv('PORT')
+        self._password = os.getenv('PASSWORD')
+
+    def connect_to_db(self, query, params=None):
+        conn = psycopg2.connect(
+            host=self._host,
+            database=self._database,
+            user=self._username,
+            port=self._port,
+            password=self._password,
+        )
+        cur = conn.cursor()
+        conn.autocommit = True
+        cur.execute(query, params)
+        cur.close()
+        conn.close()
 
 
 class DBCreating(DBConnection):
@@ -20,93 +39,38 @@ class DBCreating(DBConnection):
         self._database = "postgres"
 
     def create_db(self):
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
-        conn.autocommit = True
-        cur.execute("""CREATE DATABASE employers_vacancy""")
-        cur.close()
-        conn.close()
+        execute_message = "CREATE DATABASE employers_vacancy"
+        return self.connect_to_db(execute_message)
 
 
-class CreatingDBEmployersTable(DBConnection):
-    """Класс для создания таблицы работодателей в базе данных PostgreSQL"""
+class CreatingDBTables(DBConnection):
+    """Класс для создания таблиц в базе данных PostgreSQL"""
 
     def __init__(self):
         super().__init__()
 
     def db_creating_employers(self) -> None:
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
-        cur.execute(
-            """CREATE TABLE IF NOT EXISTS employers 
+        execute_message = """CREATE TABLE IF NOT EXISTS employers 
             (employer_id varchar PRIMARY KEY,
             company_name varchar(50) UNIQUE,
             vacancies_count int)"""
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+        return self.connect_to_db(execute_message)
 
-    def db_filling_columns_for_emps(
-        self, employers_id_list: list, employers_list: list
-    ):
-        filtered_employers_list = [
-            emp for emp in employers_list if emp["id"] in employers_id_list
-        ]
+    def db_filling_columns_for_emps(self, employers_id_list: list, employers_list: list):
+        filtered_employers_list = [emp for emp in employers_list if emp["id"] in employers_id_list]
         try:
-            conn = psycopg2.connect(
-                host=self._host,
-                database=self._database,
-                user=self._username,
-                port=self._port,
-                password=self._password,
-            )
-            cur = conn.cursor()
+            execute_message = (
+                """INSERT INTO employers (employer_id, company_name, vacancies_count) VALUES (%s, %s, %s)""")
             for employer in filtered_employers_list:
-                cur.execute(
-                    """INSERT INTO employers (employer_id, company_name, vacancies_count) VALUES (%s, %s, %s)""",
-                    (
-                        employer.get("id"),
-                        employer.get("name"),
-                        employer.get("open_vacancies"),
-                    ),
-                )
-            conn.commit()
+                params = (employer.get("id"),
+                          employer.get("name"),
+                          employer.get("open_vacancies"))
+                self.connect_to_db(execute_message, params)
         except Exception as e:
             print(f"Ошибка: {e}")
-        finally:
-            cur.close()
-            conn.close()
-
-
-class CreatingDBVacanciesTable(DBConnection):
-    """Класс для создания таблицы вакансий в базе данных PostgreSQL"""
-
-    def __init__(self):
-        super().__init__()
 
     def db_creating_vacancies(self) -> None:
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
-        cur.execute(
+        execute_message = (
             """CREATE TABLE IF NOT EXISTS vacancies 
             (vacancy_id varchar NOT NULL,
             vacancy_name varchar NOT NULL,
@@ -117,25 +81,14 @@ class CreatingDBVacanciesTable(DBConnection):
             employer_id varchar,
             FOREIGN KEY (employer_id) REFERENCES employers (employer_id))"""
         )
-        conn.commit()
-        cur.close()
-        conn.close()
+        return self.connect_to_db(execute_message)
 
     def db_filling_vacancies(self, vacancies_list: list):
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
+        execute_message = """INSERT INTO vacancies 
+                        (vacancy_id, vacancy_name, salary_from, salary_to, requirement, url, employer_id) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)"""
         for vacancy in vacancies_list:
-            cur.execute(
-                """INSERT INTO vacancies 
-                (vacancy_id, vacancy_name, salary_from, salary_to, requirement, url, employer_id) 
-                VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                (
+            params = (
                     vacancy.get("id"),
                     vacancy.get("name"),
                     (
@@ -151,7 +104,7 @@ class CreatingDBVacanciesTable(DBConnection):
                     (
                         vacancy.get("snippet").get("requirement")
                         if vacancy.get("snippet") is not None
-                        else None
+                        else 0
                     ),
                     vacancy.get("url"),
                     (
@@ -159,8 +112,5 @@ class CreatingDBVacanciesTable(DBConnection):
                         if vacancy.get("employer") is not None
                         else 0
                     ),
-                ),
-            )
-            conn.commit()
-        cur.close()
-        conn.close()
+                )
+            self.connect_to_db(execute_message, params)

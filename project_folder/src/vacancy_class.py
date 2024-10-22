@@ -19,12 +19,23 @@ class Vacancy(VacancyABC):
         "__employer_id",
     )
 
-    def __init__(self, vacancy_name, vacancy_url, salary_from, salary_to, requirement, vacancy_id, employer_id):
+    def __init__(
+        self,
+        vacancy_name,
+        vacancy_url,
+        salary_from,
+        salary_to,
+        requirement,
+        vacancy_id,
+        employer_id,
+    ):
         self.__vacancy_name: str = vacancy_name
         self.__vacancy_url: str = vacancy_url if vacancy_url else "Ссылка не указана"
         self.__salary_from: int = salary_from if salary_from else 0
         self.__salary_to: int = salary_to if salary_to else 0
-        self.__requirement: str = (requirement if requirement else "Требования не указаны")
+        self.__requirement: str = (
+            requirement if requirement else "Требования не указаны"
+        )
         self.__id: str = vacancy_id if len(vacancy_id) == 9 else "Unknown"
         self.__employer_id: str = employer_id
 
@@ -51,7 +62,7 @@ class Vacancy(VacancyABC):
                 ),
                 vacancy.get("snippet").get("requirement"),
                 vacancy.get("id"),
-                vacancy.get("employer").get("id")
+                vacancy.get("employer").get("id"),
             )
             vacancies_list.append(vacancy_new)
         return vacancies_list
@@ -66,6 +77,6 @@ class Vacancy(VacancyABC):
             "salary_to": self.__salary_to,
             "requirement": self.__requirement,
             "id": self.__id,
-            "employer_id": self.__employer_id
+            "employer_id": self.__employer_id,
         }
         return vacancy_dict
