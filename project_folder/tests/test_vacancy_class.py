@@ -1,4 +1,5 @@
 import pytest
+
 from project_folder.src.vacancy_class import Vacancy
 
 

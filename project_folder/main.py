@@ -1,15 +1,8 @@
-from project_folder.src.DBCreate_module import (DBCreating, CreatingDBTables)
-from project_folder.src.api_class_module import (
-    FindVacancyFromHHApi,
-    FindEmployerFromHHApi,
-)
-
-from project_folder.src.utils import (
-    filter_vacancies,
-    get_top_vacancies,
-    get_vacancies_by_salary,
-    sort_vacancies,
-)
+from project_folder.src.api_class_module import (FindEmployerFromHHApi,
+                                                 FindVacancyFromHHApi)
+from project_folder.src.DBCreate_module import CreatingDBTables, DBCreating
+from project_folder.src.utils import (filter_vacancies, get_top_vacancies,
+                                      get_vacancies_by_salary, sort_vacancies)
 from project_folder.src.vacancy_class import Vacancy
 
 
@@ -39,8 +32,12 @@ def user_interaction():
 
 def user_interaction_with_db():
     """Функция для создания, заполнения и взаимодействия пользователя с базой данных вакансий"""
-    employer_word = input("Введите слово по которому хотите найти работодателя или оставьте поле пустым:\n")
-    employers_count = int(input("Введите топ N (число до 50) ваканский для просмотра:\n"))
+    employer_word = input(
+        "Введите слово по которому хотите найти работодателя или оставьте поле пустым:\n"
+    )
+    employers_count = int(
+        input("Введите топ N (число до 50) ваканский для просмотра:\n")
+    )
     employer_obj = FindEmployerFromHHApi()
     employers = employer_obj.get_employer_info(employers_count, keyword=employer_word)
     emp_vac_db = DBCreating()
