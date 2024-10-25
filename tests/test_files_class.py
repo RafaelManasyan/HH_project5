@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from project_folder.src.files_class_module import JSONSaver
+from src.files_class_module import JSONSaver
 
 
 @patch("builtins.open")

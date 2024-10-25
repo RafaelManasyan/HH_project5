@@ -1,9 +1,9 @@
-from project_folder.src.api_class_module import (FindEmployerFromHHApi,
-                                                 FindVacancyFromHHApi)
-from project_folder.src.DBCreate_module import CreatingDBTables, DBCreating
-from project_folder.src.utils import (filter_vacancies, get_top_vacancies,
-                                      get_vacancies_by_salary, sort_vacancies)
-from project_folder.src.vacancy_class import Vacancy
+from src.api_class_module import (FindEmployerFromHHApi,
+                                  FindVacancyFromHHApi)
+from src.DBCreate_module import CreatingDBTables, DBConnection
+from src.utils import (filter_vacancies, get_top_vacancies,
+                       get_vacancies_by_salary, sort_vacancies)
+from src.vacancy_class import Vacancy
 
 
 def user_interaction():
@@ -32,25 +32,17 @@ def user_interaction():
 
 def user_interaction_with_db():
     """Функция для создания, заполнения и взаимодействия пользователя с базой данных вакансий"""
-    employer_word = input(
-        "Введите слово по которому хотите найти работодателя или оставьте поле пустым:\n"
-    )
-    employers_count = int(
-        input("Введите топ N (число до 50) ваканский для просмотра:\n")
-    )
+    employer_word = input("Введите слово по которому хотите найти работодателя или оставьте поле пустым:\n")
+    employers_count = int(input("Введите топ N (число до 50) ваканский для просмотра:\n"))
     employer_obj = FindEmployerFromHHApi()
     employers = employer_obj.get_employer_info(employers_count, keyword=employer_word)
-    emp_vac_db = DBCreating()
+    emp_vac_db = DBConnection()
     emp_vac_db.create_db()
-    employers_table = CreatingDBTables()
+    employers_table = DBConnection()
     employers_table.db_creating_employers()
-    employers_id_list = list(
-        input(
-            "Введите через запятую id не менее 10 компаний для отслеживания:\n"
-        ).split(", ")
-    )
+    employers_id_list = list(input("Введите через запятую id не менее 10 компаний для отслеживания:\n").split(", "))
     employers_table.db_filling_columns_for_emps(employers_id_list, employers)
-    vacancies_table = CreatingDBTables()
+    vacancies_table = DBConnection()
     vacancies_table.db_creating_vacancies()
     for emp_id in employers_id_list:
         vacancy_list = FindVacancyFromHHApi().get_vacancies_by_employer_id(emp_id)

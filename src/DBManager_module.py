@@ -1,6 +1,6 @@
 import psycopg2
 
-from project_folder.src.DBCreate_module import DBConnection
+from src.DBCreate_module import DBConnection
 
 
 class DBManager(DBConnection):
@@ -51,6 +51,5 @@ class DBManager(DBConnection):
 
     def get_vacancies_with_keyword(self, keyword: str):
         """Метод для получения вакансий по ключевому слову"""
-        execute_message = f"""SELECT * FROM vacancies 
-        WHERE vacancy_name LIKE '%{keyword.title()}%' OR vacancy_name LIKE '%{keyword.lower()}%'"""
+        execute_message = f"""SELECT * FROM vacancies WHERE vacancy_name ILIKE '%{keyword}%'"""
         return self.connect_to_db(execute_message)

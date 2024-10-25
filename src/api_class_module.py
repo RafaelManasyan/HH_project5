@@ -108,7 +108,3 @@ class FindEmployerFromHHApi(ApiHH):
             print(f"{employer.get('name')}, id: {employer.get('id')}")
         print("...")
         return self.__employers
-
-
-# x = FindVacancyFromHHApi().get_vacancies_by_employer_id('26624')
-# print(x)

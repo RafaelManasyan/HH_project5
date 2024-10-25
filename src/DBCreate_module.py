@@ -30,24 +30,11 @@ class DBConnection:
         cur.close()
         conn.close()
 
-
-class DBCreating(DBConnection):
-    """Класс для создания базы данных"""
-
-    def __init__(self):
-        super().__init__()
-        self._database = "postgres"
-
     def create_db(self):
+        """Метод для создания базы данных"""
+        self._database = "postgres"
         execute_message = "CREATE DATABASE employers_vacancy"
         return self.connect_to_db(execute_message)
-
-
-class CreatingDBTables(DBConnection):
-    """Класс для создания таблиц в базе данных PostgreSQL"""
-
-    def __init__(self):
-        super().__init__()
 
     def db_creating_employers(self) -> None:
         execute_message = """CREATE TABLE IF NOT EXISTS employers 
@@ -56,9 +43,7 @@ class CreatingDBTables(DBConnection):
             vacancies_count int)"""
         return self.connect_to_db(execute_message)
 
-    def db_filling_columns_for_emps(
-        self, employers_id_list: list, employers_list: list
-    ):
+    def db_filling_columns_for_emps(self, employers_id_list: list, employers_list: list):
         filtered_employers_list = [
             emp for emp in employers_list if emp["id"] in employers_id_list
         ]

@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from project_folder.src.api_class_module import HeadHunterAPI
+from src.api_class_module import HeadHunterAPI
 
 
 @patch("requests.get")

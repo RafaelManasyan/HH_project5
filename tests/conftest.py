@@ -1,6 +1,6 @@
 import pytest
 
-from project_folder.src.vacancy_class import Vacancy
+from src.vacancy_class import Vacancy
 
 
 @pytest.fixture

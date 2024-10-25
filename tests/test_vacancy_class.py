@@ -1,6 +1,4 @@
-import pytest
-
-from project_folder.src.vacancy_class import Vacancy
+from src.vacancy_class import Vacancy
 
 
 def test_get_vac_obj(get_vac_object_class):
