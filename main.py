@@ -1,6 +1,6 @@
 from src.api_class_module import (FindEmployerFromHHApi,
                                   FindVacancyFromHHApi)
-from src.DBCreate_module import CreatingDBTables, DBConnection
+from src.DBCreate_module import DBConnection
 from src.utils import (filter_vacancies, get_top_vacancies,
                        get_vacancies_by_salary, sort_vacancies)
 from src.vacancy_class import Vacancy
