@@ -2,6 +2,7 @@ import os
 
 import psycopg2
 from dotenv import load_dotenv
+from psycopg2 import OperationalError
 
 load_dotenv()
 
@@ -32,9 +33,15 @@ class DBConnection:
 
     def create_db(self):
         """Метод для создания базы данных"""
-        self._database = "postgres"
-        execute_message = "CREATE DATABASE employers_vacancy"
-        return self.connect_to_db(execute_message)
+        try:
+            self._database = "postgres"
+            execute_message = "CREATE DATABASE employers_vacancy;"
+            return self.connect_to_db(execute_message)
+        except Exception as error:
+            if 'already exists' in str(error):
+                print("База данных уже существует.")
+            else:
+                print(f"Ошибка при создании базы данных: {e}")
 
     def db_creating_employers(self) -> None:
         execute_message = """CREATE TABLE IF NOT EXISTS employers 
