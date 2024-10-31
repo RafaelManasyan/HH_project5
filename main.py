@@ -36,17 +36,15 @@ def user_interaction_with_db():
     employers_count = int(input("Введите топ N (число до 50) ваканский для просмотра:\n"))
     employer_obj = FindEmployerFromHHApi()
     employers = employer_obj.get_employer_info(employers_count, keyword=employer_word)
-    emp_vac_db = DBConnection()
-    emp_vac_db.create_db()
-    employers_table = DBConnection()
-    employers_table.db_creating_employers()
+    db = DBConnection()
+    db.create_db()
+    db.db_creating_employers()
     employers_id_list = list(input("Введите через запятую id не менее 10 компаний для отслеживания:\n").split(", "))
-    employers_table.db_filling_columns_for_emps(employers_id_list, employers)
-    vacancies_table = DBConnection()
-    vacancies_table.db_creating_vacancies()
+    db.db_filling_columns_for_emps(employers_id_list, employers)
+    db.db_creating_vacancies()
     for emp_id in employers_id_list:
         vacancy_list = FindVacancyFromHHApi().get_vacancies_by_employer_id(emp_id)
-        vacancies_table.db_filling_vacancies(vacancy_list)
+        db.db_filling_vacancies(vacancy_list)
 
 
 if __name__ == "__main__":
