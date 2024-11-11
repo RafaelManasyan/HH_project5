@@ -29,27 +29,27 @@ class DBManager(DBConnection):
         """Метод для получения из базы данных названия компании и количества вакансий этой компании"""
         execute_message = """SELECT employers.company_name, COUNT(vacancies.employer_id)
         FROM employers JOIN vacancies USING (employer_id) GROUP BY employer_id"""
-        return self.connect_to_db(execute_message)
+        return f'Компании и количество вакансий:\n{self.connect_to_db(execute_message)}'
 
     def get_all_vacancies(self):
         """Метод для получения информации по вакансии и названию компании"""
         execute_message = """SELECT employers.company_name, vacancies.vacancy_name, 
         ((vacancies.salary_from + vacancies.salary_to) / 2), vacancies.url
         FROM vacancies JOIN employers USING(employer_id)"""
-        return self.connect_to_db(execute_message)
+        return f'Список всех вакансий:\n{self.connect_to_db(execute_message)[:10]} \n ...'
 
     def get_avg_salary(self):
         """Метод для получения средней зарплаты по вакансиям"""
         execute_message = """SELECT AVG((vacancies.salary_from + vacancies.salary_to) / 2) FROM vacancies"""
-        return self.connect_to_db(execute_message)
+        return f'Средняя зарплата по вакансиям:\n{self.connect_to_db(execute_message)}'
 
     def get_vacancies_with_higher_salary(self):
         """Метод для получения вакансий с зарплатой выше среднего"""
         execute_message = """SELECT * FROM vacancies WHERE ((vacancies.salary_from + vacancies.salary_to) / 2) > 
 (SELECT (AVG((vacancies.salary_from + vacancies.salary_to) / 2)) FROM vacancies)"""
-        return self.connect_to_db(execute_message)
+        return f'Вакансии с зарплатой выше среднего:\n{self.connect_to_db(execute_message)[:10]}'
 
     def get_vacancies_with_keyword(self, keyword: str):
         """Метод для получения вакансий по ключевому слову"""
         execute_message = f"""SELECT * FROM vacancies WHERE vacancy_name ILIKE '%{keyword}%'"""
-        return self.connect_to_db(execute_message)
+        return f'Вакансии по ключевому слову:\n{self.connect_to_db(execute_message)[:10]}'
