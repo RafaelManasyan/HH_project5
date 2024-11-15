@@ -18,18 +18,20 @@ class DBConnection:
         self._password = os.getenv("PASSWORD")
 
     def connect_to_db(self, query, params=None):
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
-        conn.autocommit = True
-        cur.execute(query, params)
-        cur.close()
-        conn.close()
+        try:
+            with psycopg2.connect(
+                    host=self._host,
+                    database=self._database,
+                    user=self._username,
+                    port=self._port,
+                    password=self._password,
+            ) as conn:
+                with conn.cursor() as cur:
+                    conn.autocommit = True
+                    cur.execute(query, params)
+        except Exception as e:
+            print(f"Ошибка при выполнении запроса: {e}")
+        return None
 
     def create_db(self):
         """Метод для создания базы данных"""

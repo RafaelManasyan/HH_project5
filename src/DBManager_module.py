@@ -10,19 +10,21 @@ class DBManager(DBConnection):
         super().__init__()
 
     def connect_to_db(self, query, params=None):
-        conn = psycopg2.connect(
-            host=self._host,
-            database=self._database,
-            user=self._username,
-            port=self._port,
-            password=self._password,
-        )
-        cur = conn.cursor()
-        conn.autocommit = True
-        cur.execute(query, params)
-        result = cur.fetchall()
-        cur.close()
-        conn.close()
+        try:
+            with psycopg2.connect(
+                    host=self._host,
+                    database=self._database,
+                    user=self._username,
+                    port=self._port,
+                    password=self._password,
+            ) as conn:
+                with conn.cursor() as cur:
+                    conn.autocommit = True
+                    cur.execute(query, params)
+                    result = cur.fetchall()
+        except Exception as e:
+            print(f"Ошибка при выполнении запроса: {e}")
+            result = []
         return result
 
     def get_companies_and_vacancies_count(self):
