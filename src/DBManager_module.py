@@ -18,8 +18,8 @@ class DBManager(DBConnection):
                     port=self._port,
                     password=self._password,
             ) as conn:
+                conn.autocommit = True
                 with conn.cursor() as cur:
-                    conn.autocommit = True
                     cur.execute(query, params)
                     result = cur.fetchall()
         except Exception as e:

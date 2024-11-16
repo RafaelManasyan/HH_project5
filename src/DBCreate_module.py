@@ -18,27 +18,29 @@ class DBConnection:
         self._password = os.getenv("PASSWORD")
 
     def connect_to_db(self, query, params=None):
-        try:
-            with psycopg2.connect(
+        conn = psycopg2.connect(
                     host=self._host,
                     database=self._database,
                     user=self._username,
                     port=self._port,
-                    password=self._password,
-            ) as conn:
-                with conn.cursor() as cur:
-                    conn.autocommit = True
-                    cur.execute(query, params)
-        except Exception as e:
-            print(f"Ошибка при выполнении запроса: {e}")
-        return None
+                    password=self._password)
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute(query, params)
+
+        cur.close()
+        conn.close()
 
     def create_db(self):
         """Метод для создания базы данных"""
-        self._database = "postgres"
-        execute_message_drop = "DROP DATABASE IF EXISTS employers_vacancy;"
+        try:
+            self._database = "postgres"
+            execute_message_drop = "DROP DATABASE IF EXISTS employers_vacancy;"
+            self.connect_to_db(execute_message_drop)
+        except Exception as e:
+            print(f'Ошибка с подключением: {e}')
         execute_message_create = "CREATE DATABASE employers_vacancy;"
-        return self.connect_to_db(execute_message_drop), self.connect_to_db(execute_message_create)
+        self.connect_to_db(execute_message_create)
 
     def db_creating_employers(self) -> None:
         execute_message = """CREATE TABLE IF NOT EXISTS employers 
